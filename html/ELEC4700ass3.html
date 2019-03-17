@@ -1,0 +1,1444 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>ELEC4700ass3</title><meta name="generator" content="MATLAB 9.4"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2019-03-17"><meta name="DC.source" content="ELEC4700ass3.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput"><span class="comment">%Assignment 3-part 1</span>
+<span class="comment">%Would like the one on one evaluation please</span>
+<span class="comment">%When publishing, the waveforms for parts 1 and 2 arent showing up and are</span>
+<span class="comment">%replaced with 5 irrelevent figures that you shouldnt consider part of it.</span>
+<span class="comment">%When the individual scripts are ran, the waveforms output as expected,</span>
+<span class="comment">%just when publishing or when running them all at once does this error</span>
+<span class="comment">%occur. Pretty sure it is due to the parts having different variable names</span>
+<span class="comment">%for some cases, so it doesnt compile correctly.</span>
+<span class="comment">%Mike Crawford</span>
+<span class="comment">%reset</span>
+clearvars
+clearvars <span class="string">-GLOBAL</span>
+close <span class="string">all</span>
+format <span class="string">shortE</span>
+<span class="keyword">global</span> C
+<span class="keyword">global</span> Ecount
+<span class="keyword">global</span> Vx Vy Vtotal x y
+Ecount =100;   <span class="comment">%setting amount of electrons used</span>
+C.mo = 9.10938215e-31;  <span class="comment">%Electron mass</span>
+C.k = 1.3806504e-23;    <span class="comment">%Boltzmann constant</span>
+q = -1.60217662e-19;
+T =300;     <span class="comment">%Temperature (K)</span>
+mn = 0.26*C.mo;
+Voltagex = 0.1; <span class="comment">%initial voltage condition</span>
+
+L = 200e-9; <span class="comment">%Length of Border</span>
+W = 100e-9; <span class="comment">%Width of Border</span>
+Edensity = 1e15*100^2;
+
+Vth = sqrt(2*(C.k*T)/mn); <span class="comment">%Calculation of Thermal Velocity</span>
+dt = 10e-15; <span class="comment">%timestep</span>
+Stop =500*dt; <span class="comment">%timeframe</span>
+x = zeros(Ecount, 2);   <span class="comment">%array of x positions</span>
+y = zeros(Ecount, 2);   <span class="comment">%array of y positions</span>
+
+Temperature = zeros(1,2);   <span class="comment">%array of temperatures</span>
+Time = 0;
+VisibleEcount = 10; <span class="comment">%number of visible electrons</span>
+Ex = Voltagex/L;    <span class="comment">%E field in x and y direction</span>
+Ey =  0;
+<span class="comment">%Ex holds the value of the Electric field</span>
+Fx = q*Ex;          <span class="comment">%force in x and y direction</span>
+Fy = q*Ey;
+
+Accx = Fx /mn;      <span class="comment">%Acceleration in x and y direction</span>
+Accy = Fy /mn;
+
+Pscatter = 1 - exp(dt/0.2e-12);
+Ix = zeros(1,Ecount); <span class="comment">%initialize matrix for current values</span>
+MappingStep = 10e-9; <span class="comment">%size of each suare used on mapping grid</span>
+<span class="comment">%setting arrays of density and temperature based off border demesions and</span>
+<span class="comment">%mapping step</span>
+DensityMap = zeros(W/MappingStep, L/MappingStep);
+TemperatureMap = zeros(W/MappingStep, L/MappingStep);
+<span class="keyword">for</span> i = 1:Ecount <span class="comment">%setting random locations for eact electron</span>
+    x(i,1) = rand()*200e-9;
+    y(i,1) = rand()*100e-9;
+<span class="keyword">end</span>
+<span class="keyword">for</span> i = 1:Ecount
+    dir = 2*pi*rand;
+Vx(1:Ecount) = Vth * cos(dir); <span class="comment">%setting velocities</span>
+Vy(1:Ecount) = Vth * sin(dir);
+<span class="keyword">end</span>
+<span class="keyword">for</span> i = 1:Ecount
+    Vtotal(i) = sqrt(Vx(i)^2 + Vy(i)^2); <span class="comment">%summing x and y velocities</span>
+<span class="keyword">end</span>
+
+
+figure(1)   <span class="comment">%plotting electrons</span>
+subplot(2,1,1);
+axis([0 L 0 W]);
+title(<span class="string">'Trajectory of electron in Silicon'</span>);
+xlabel(<span class="string">'X'</span>);
+ylabel(<span class="string">'Y'</span>);
+hold <span class="string">on</span>;
+
+subplot(2,1,2); <span class="comment">%plotting avg temperature</span>
+axis([0 Stop 0 500]);
+title(<span class="string">'Semiconductor Temperature'</span>);
+xlabel(<span class="string">'Time (s)'</span>);
+ylabel(<span class="string">'Temperature (K)'</span>);
+hold <span class="string">on</span>;
+
+<span class="keyword">for</span> i = 1:Ecount <span class="comment">%Sum of all initial temperatures</span>
+   Temperature(1,2) = Temperature(1,2) + (mn*Vtotal(i)^2)/(2*C.k);
+<span class="keyword">end</span>
+Vdrift = mean(Vx); <span class="comment">%Calculate aveage drift velocity</span>
+Ix(1) = L * W * q * Edensity * Vdrift;
+<span class="comment">%intitial average temperature</span>
+AvgTemperature = Temperature(1,2)/Ecount;
+TemperaturePlot = [300 AvgTemperature]; <span class="comment">%setting temperature line to plot</span>
+TimePlot = [0 Time];    <span class="comment">%setting time line to plot</span>
+plot(Time, AvgTemperature);
+
+<span class="comment">%reseting values before loop</span>
+VTotal = 0;
+Temperature(1,2) = 0;
+AvgTemperature = 0;
+
+<span class="comment">%looping through timesteps</span>
+
+<span class="keyword">for</span> i = 2:Ecount
+    subplot(2,1,1)
+    <span class="keyword">for</span> j = 1:Ecount <span class="comment">%looping through electrons</span>
+        <span class="keyword">if</span> Pscatter &gt; rand
+            Vx(j) = Vt * randn;
+            Vy(j) = Vt * randn;
+        <span class="keyword">end</span>
+        <span class="comment">%updating velocity with new acceleration</span>
+        Vx(j) =  Vx(j) + Accx*dt;
+        Vy(j) =  Vy(j) + Accy*dt;
+        x(j,2) = x(j,1); <span class="comment">%updating previous positions</span>
+        y(j,2) = y(j,1);
+        x(j,1) = x(j,1) + (dt * Vx(j));<span class="comment">%updating new positions</span>
+        y(j,1) = y(j,1) + (dt * Vy(j));
+        <span class="keyword">if</span> x(j,1) &gt; L <span class="comment">%setting right side boundary condition</span>
+            x(j,2) = 0;
+            x(j,1) = dt * Vx(j);
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> x(j,1) &lt; 0 <span class="comment">%setting left side boundary condition</span>
+            x(j,2) = L;
+            x(j,1) = x(j,2) + (dt * Vx(j));
+        <span class="keyword">end</span>
+        <span class="comment">%setting roof/floor boundary condition</span>
+        <span class="keyword">if</span> y(j,1) &gt; W || y(j,1) &lt; 0
+            Vy(j) = -Vy(j);
+        <span class="keyword">end</span>
+        <span class="comment">%setting up position line vectors to plot</span>
+        XPlot = [x(j,2) x(j,1)];
+        YPlot = [y(j,2) y(j,1)];
+        <span class="keyword">if</span> j &lt; VisibleEcount
+            <span class="comment">%plot visible position line vectors</span>
+        plot(XPlot,YPlot);
+        <span class="keyword">end</span>
+
+        <span class="comment">%sum of x and y  velocities</span>
+       VTotal = sqrt(Vx(j)^2 + Vy(j)^2);
+
+        <span class="comment">%sum of all temperatures</span>
+       Temperature(1,2) = Temperature(1,2) + (mn*Vtotal(j)^2)/(2*C.k);
+
+    <span class="keyword">end</span>
+    <span class="comment">%averaging temperature sum and plotting against each timestep</span>
+    Vdrift = mean(Vx(:));
+    Ix(i) = L * W * q * Edensity * Vdrift;
+    AvgTemperature = Temperature(1,2)/Ecount;
+    TemperaturePlot = [Temperature(1,1) AvgTemperature];
+    TimePlot = [(Time - dt) Time];
+    subplot(2,1,2);
+    plot(TimePlot, TemperaturePlot);
+    Temperature(1,1) = AvgTemperature;
+    AvgTemperature = 0;
+    Temperature(1,2) = 0;
+    pause(1e-19)
+    Time = Time + dt;
+
+<span class="keyword">end</span>
+<span class="comment">%setup time axis for current plot</span>
+TimePlot = (0:1:Ecount-1)*dt;
+figure(2)
+plot(TimePlot, Ix)
+xlabel(<span class="string">'Time (s)'</span>)
+ylabel(<span class="string">'current'</span>)
+title(<span class="string">'Drift Current'</span>)
+hold <span class="string">on</span>
+
+<span class="keyword">for</span> i = 1:(L/MappingStep)
+    <span class="comment">%looping through Y indexes of the Mapping grid</span>
+    <span class="keyword">for</span> j = 1:(W/MappingStep)
+        <span class="comment">%looping through electrons</span>
+        <span class="keyword">for</span> m = 1:Ecount
+            <span class="comment">%Checks to see if the electons position is with the map grip</span>
+            <span class="comment">%being indexed. does this by checking all 4 sides of the</span>
+            <span class="comment">%square grid index</span>
+            <span class="keyword">if</span>(x(m,1) &gt; MappingStep*(i -1)) &amp;&amp; <span class="keyword">...</span>
+                    (x(m,1) &lt; MappingStep*(i)) &amp;&amp; <span class="keyword">...</span>
+                    (y(m,1) &gt; MappingStep*(j - 1)) &amp;&amp; <span class="keyword">...</span>
+                    (y(m,1) &lt; MappingStep*(j))
+                <span class="comment">%sum of x and y velocities</span>
+                Vtotal(m) = sqrt(Vx(m)^2 + Vy(m)^2);
+                <span class="comment">%counts increased on the indexed location of both Maps</span>
+                DensityMap(j, i) = DensityMap(j, i) + 1;
+                TemperatureMap(j, i) = TemperatureMap(j,i) + <span class="keyword">...</span>
+                    (mn*Vtotal(m)^2)/(2*C.k);
+            <span class="keyword">end</span>
+            <span class="comment">%Averages the temperature values given in each grid index</span>
+            TemperatureMap(j,i) = TemperatureMap(j,i)/DensityMap(j,i);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%uses histogram to model density with a 3rd demension of number of</span>
+<span class="comment">%electrons. Would have ideally reindexed the position matrixes to account</span>
+<span class="comment">%for all the different time locations, but didnt have time, would be the</span>
+<span class="comment">%next thing to change</span>
+figure(3)
+hist3([x(:,1) y(:,1)], [200 100])
+title(<span class="string">'3D Density map of Electrons'</span>)
+xlabel(<span class="string">'X (5nm)'</span>);
+ylabel(<span class="string">'Y (5nm)'</span>);
+set(gca, <span class="string">'Ydir'</span>, <span class="string">'Normal'</span>)
+c = colorbar;
+title(c, <span class="string">'Electron Count'</span>)
+hold <span class="string">on</span>
+
+<span class="comment">%Couldnt figure out how to make temperature 3d. thought i could plot it as</span>
+<span class="comment">%the Z component but could not get the dimensions to match</span>
+<span class="comment">% [Tx,Ty] = meshgrid(1:10,1:20);</span>
+<span class="comment">% Tm = DensityMap(Tx, Ty)</span>
+figure(4)
+<span class="comment">% surf(Tx,Ty,Tm)</span>
+imagesc(TemperatureMap)
+title(<span class="string">'temperature map of Electrons'</span>);
+xlabel(<span class="string">'X (5nm)'</span>)
+ylabel(<span class="string">'Y (5nm)'</span>)
+set(gca, <span class="string">'Ydir'</span>, <span class="string">'Normal'</span>)
+c = colorbar;
+title(c, <span class="string">'Temperature (K)'</span>)
+hold <span class="string">on</span>
+
+<span class="comment">%Assignment 3- part 2</span>
+<span class="comment">%this part was similar to the previous assignment with the main change</span>
+<span class="comment">%being the applied voltage being used</span>
+x = 30;
+y = 20;
+
+conductOut = 1;
+conductBox = 01e-2;
+conduct = zeros(x,y);
+G = sparse (x*y, x*y);
+V = zeros(1, x*y);
+Voltagex = 0.1;
+
+<span class="keyword">for</span> i = 1:x
+    <span class="keyword">for</span> j = 1:y
+        <span class="comment">%sets boundaries of boxes</span>
+        <span class="keyword">if</span> (i &gt; (0.3*x) || i &lt; (0.6*x)) &amp;&amp; (j &gt; (0.6*y) || j &lt; (0.3*y))
+            conduct(i,j) = conductBox;
+        <span class="keyword">else</span>
+            conduct(i,j) = conductOut;
+        <span class="keyword">end</span>
+
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%same code as previous parts</span>
+<span class="keyword">for</span> i = 1:x
+    <span class="keyword">for</span> j = 1:y
+        n = j + (i - 1)*y;
+        nx1 = j + ((i-1) - 1)*y;
+        nx2 = j + ((i+1) - 1)*y;
+        ny1 = (j-1) + (i - 1)*y;
+        ny2 = (j+1) + (i - 1)*y;
+
+        <span class="keyword">if</span> i == 1
+            V(n) = Voltagex;
+            G(n,n) = 1;
+        <span class="keyword">elseif</span> i == x
+            V(n) = 0;
+            G(n,n) =1;
+        <span class="keyword">elseif</span> j == 1
+            Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+            Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+
+            Cy2 = (conduct(i,j) + conduct(i,j+1))/2;
+            G(n,n) = -Cx1 - Cx2 - Cy2;
+            G(n, nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n, ny2) = Cy2;
+        <span class="keyword">elseif</span> j == y
+             Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+             Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+             Cy1 = (conduct(i,j) + conduct(i,j-1))/2;
+
+            G(n,n) = -Cx1 - Cx2 - Cy1;
+            G(n,nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n,ny1) = Cy1;
+        <span class="keyword">else</span>
+             Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+            Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+            Cy1 = (conduct(i,j) + conduct(i,j-1))/2;
+            Cy2 = (conduct(i,j) + conduct(i,j+1))/2;
+            G(n,n) = -Cx1 - Cx2 - Cy1 - Cy2;
+            G(n,nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n,ny1) = Cy1;
+            G(n,ny2) = Cy2;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+S = G\V';
+surface = zeros(x,y);
+<span class="keyword">for</span> i = 1:x
+    <span class="keyword">for</span> j = 1:y
+        n = j + (i - 1)*y;
+        surface(i,j) = S(n);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+figure(5)
+surf(surface)
+title(<span class="string">'Surface plot of V(x,y)'</span>)
+
+[Ex, Ey] = gradient(-surface);
+figure(6)
+quiver(Ex, Ey)
+title(<span class="string">'Electric field quiver plot'</span>)
+
+<span class="comment">%Assignment 3- part 3</span>
+
+
+format <span class="string">shortE</span>
+<span class="keyword">global</span> C
+
+<span class="keyword">global</span> Vx Vy Vtotal x y
+Ecount =1000;   <span class="comment">%setting amount of electrons used</span>
+C.mo = 9.10938215e-31; <span class="comment">%Electron mass</span>
+C.k = 1.3806504e-23; <span class="comment">%Boltzmann constant</span>
+q = -1.60217662e-19;
+T =300; <span class="comment">%Temperature (K)</span>
+mn = 0.26*C.mo;
+L = 200e-9;  <span class="comment">%Length of Border</span>
+W = 100e-9; <span class="comment">%Width of Border</span>
+Vth = sqrt((2*C.k*T)/mn); <span class="comment">%Calculation of Thermal Velocity</span>
+dt = 10e-15;  <span class="comment">%timestep</span>
+Stop = 100*dt; <span class="comment">%timeframe</span>
+x = zeros(Ecount, 2);  <span class="comment">%array of x positions</span>
+y = zeros(Ecount, 2);  <span class="comment">%array of y positions</span>
+Temperature = zeros(1,2); <span class="comment">%array of temperatures</span>
+Time = 0;
+VisibleEcount = 50; <span class="comment">%visibble electrons</span>
+tmn = 0.2e-12; <span class="comment">%mean time between collisions</span>
+PScat = 1 - exp(-dt/tmn);  <span class="comment">%scattering probability equation</span>
+VTotalHistogram = zeros(Ecount, 1); <span class="comment">%array of thermal velocities</span>
+DrawBoxX = [80e-9 80e-9 120e-9 120e-9 80e-9]; <span class="comment">%X border limits of boxes</span>
+<span class="comment">%(Same X values for both)</span>
+DrawBoxY1 = [100e-9 60e-9 60e-9 100e-9 100e-9];<span class="comment">%Y border limits of top box</span>
+DrawBoxY2 = [40e-9 0 0 40e-9 40e-9]; <span class="comment">%Y border limits of bottom box</span>
+Specular = true; <span class="comment">%boolean indicating whether specular or diffusive</span>
+InsideBox = true; <span class="comment">%boolean showing if electron spawned inside boxes</span>
+MappingStep = 10e-9; <span class="comment">%size of each suare used on mapping grid</span>
+<span class="comment">%setting arrays of density and temperature based off border demesions and</span>
+<span class="comment">%mapping step</span>
+DensityMap = zeros(W/MappingStep, L/MappingStep);
+TemperatureMap = zeros(W/MappingStep, L/MappingStep);
+
+nx = 30;
+ny = 20;
+dx = L/nx;
+dy = W/ny;
+conductOut = 1;
+conductBox = 01e-2;
+conduct = zeros(nx,ny);
+G = sparse (nx*ny, nx*ny);
+V = zeros(1, nx*ny);
+Voltagex = 0.1;
+
+<span class="keyword">for</span> i = 1:nx
+    <span class="keyword">for</span> j = 1:ny
+        <span class="comment">%sets boundaries of boxes</span>
+        <span class="keyword">if</span> (i &gt; (0.3*nx) || i &lt; (0.6*nx)) &amp;&amp; (j &gt; (0.6*ny) || j &lt; (0.3*ny))
+            conduct(i,j) = conductBox;
+        <span class="keyword">else</span>
+            conduct(i,j) = conductOut;
+        <span class="keyword">end</span>
+
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> i = 1:nx
+    <span class="keyword">for</span> j = 1:ny
+        n = j + (i - 1)*ny;
+        nx1 = j + ((i-1) - 1)*ny;
+        nx2 = j + ((i+1) - 1)*ny;
+        ny1 = (j-1) + (i - 1)*ny;
+        ny2 = (j+1) + (i - 1)*ny;
+
+        <span class="keyword">if</span> i == 1
+            V(n) = Voltagex;
+            G(n,n) = 1;
+        <span class="keyword">elseif</span> i == nx
+            V(n) = 0;
+            G(n,n) =1;
+        <span class="keyword">elseif</span> j == 1
+            Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+            Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+
+            Cy2 = (conduct(i,j) + conduct(i,j+1))/2;
+            G(n,n) = -Cx1 - Cx2 - Cy2;
+            G(n, nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n, ny2) = Cy2;
+        <span class="keyword">elseif</span> j == ny
+             Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+             Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+             Cy1 = (conduct(i,j) + conduct(i,j-1))/2;
+
+            G(n,n) = -Cx1 - Cx2 - Cy1;
+            G(n,nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n,ny1) = Cy1;
+        <span class="keyword">else</span>
+             Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+            Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+            Cy1 = (conduct(i,j) + conduct(i,j-1))/2;
+            Cy2 = (conduct(i,j) + conduct(i,j+1))/2;
+            G(n,n) = -Cx1 - Cx2 - Cy1 - Cy2;
+            G(n,nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n,ny1) = Cy1;
+            G(n,ny2) = Cy2;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+S = G\V';
+surface = zeros(nx,ny);
+<span class="keyword">for</span> i = 1:nx
+    <span class="keyword">for</span> j = 1:ny
+        n = j + (i - 1)*ny;
+        surface(i,j) = S(n);
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+[Ex, Ey] = gradient(-surface);
+
+Fx = q*Ex;
+Fy = q*Ey;
+
+Accx = Fx /mn;
+Accy = Fy /mn;
+
+<span class="keyword">for</span> i = 1:Ecount
+    x(i,1) = rand()*200e-9; <span class="comment">%setting random electron positions</span>
+    y(i,1) = rand()*100e-9;
+    InsideBox = true;
+    <span class="comment">%checks if set electron is inside box, if so reinitialize its position</span>
+    <span class="keyword">while</span> InsideBox == true
+        <span class="keyword">if</span> (x(i) &gt;= 40e-9 &amp;&amp; x(i) &lt;= 120e-9) &amp;&amp; (y(i) &gt;= 60e-9 ||<span class="keyword">...</span>
+                y(i) &lt;= 40e-9)
+            x(i,1) = rand * 200e-9;
+            y(i,1) = rand * 100e-9;
+        <span class="keyword">else</span>
+            InsideBox = false;
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+
+<span class="keyword">end</span>
+
+<span class="keyword">for</span> i = 1:Ecount
+
+Vx(1:Ecount) = Vth * randn; <span class="comment">%setting velocities</span>
+Vy(1:Ecount) = Vth * randn;
+<span class="keyword">end</span>
+
+<span class="comment">%plot of electrons with boxes</span>
+figure(7)
+subplot(2,1,1);
+plot(DrawBoxX, DrawBoxY1, DrawBoxX, DrawBoxY2)
+axis([0 L 0 W]);
+title(<span class="string">'Part 3'</span>);
+xlabel(<span class="string">'X'</span>);
+ylabel(<span class="string">'Y'</span>);
+hold <span class="string">on</span>;
+
+<span class="keyword">while</span> Time &lt; Stop
+    subplot(2,1,1)
+    <span class="comment">%looping electrons</span>
+    <span class="keyword">for</span> j = 1:Ecount
+        <span class="comment">%set to assume leaking to start condition for diffusive bounces</span>
+        leaking = true;
+        <span class="comment">%scattering probability condition</span>
+        <span class="keyword">if</span> PScat&gt; rand
+                Vx(j) = Vth * randn;
+                Vy(j) = Vth * randn;
+        <span class="keyword">end</span>
+        <span class="comment">%</span>
+        <span class="comment">%Assigning values to reindex the electrons position on the grid, to</span>
+        <span class="comment">%the coresponding position on the electric field grid. This is used</span>
+        <span class="comment">%to estimate which index of the electric fireld the electron fits</span>
+        <span class="comment">%into, the round function is used to keep the value an integer and</span>
+        <span class="comment">%the conditions are put in place so it stays in the matrix range.</span>
+        <span class="comment">%Im not sure why values are exceeding the range, but this was the</span>
+        <span class="comment">%quick fix.</span>
+        Axindex = round((x(j,2)/L) * 30);
+        Ayindex = round((y(j,2)/W)*20);
+        <span class="keyword">if</span> Axindex &lt; 1
+            Axindex = 1;
+        <span class="keyword">elseif</span> Axindex &gt; 30
+                Axindex = 30;
+        <span class="keyword">end</span>
+        <span class="keyword">if</span> Ayindex &lt; 1
+            Ayindex = 1;
+        <span class="keyword">elseif</span> Ayindex &gt; 20
+            Ayindex = 20;
+        <span class="keyword">end</span>
+        <span class="comment">%update velocities and positions</span>
+        Vx(j) =  Vx(j) + Accx(Axindex,Ayindex)*dt;
+        Vy(j) =  Vy(j) + Accy(Axindex,Ayindex)*dt;
+        x(j,2) = x(j,1);
+        y(j,2) = y(j,1);
+        x(j,1) = x(j,1) + (dt * Vx(j));
+        y(j,1) = y(j,1) + (dt * Vy(j));
+        <span class="comment">%checking if collision with top box</span>
+        <span class="keyword">if</span> (x(j,1) &gt;= 80e-9 &amp;&amp; x(j,1) &lt;= 120e-9) &amp;&amp; y(j,1) &gt;= 60e-9
+            <span class="comment">%checking which side of box collision came from</span>
+            <span class="comment">%if left side, reflect X velocity and reset positions outside</span>
+            <span class="comment">%of box</span>
+                <span class="keyword">if</span> y(j,2) &lt; 60e-9
+                    Vy(j) = -Vy(j);
+                    y(j,1) = 60e-9;
+                    y(j,2) = 60e-9;
+                    <span class="comment">%if right side, reflect X velocity and reset position</span>
+                    <span class="comment">%outside of box</span>
+                <span class="keyword">elseif</span> x(j,2) &lt; 80e-9
+                    Vx(j) = -Vx(j);
+                    x(j,1) = 80e-9;
+                    x(j,2) = 80e-9;
+                    <span class="comment">%if bottom side, reflect Y velocity and reset position</span>
+                    <span class="comment">%outside of box</span>
+                <span class="keyword">elseif</span> x(j,2) &gt; 120e-9
+                    Vx(j) = -Vx(j);
+                    x(j,1) = 120e-9;
+                    x(j,2) = 120e-9;
+                <span class="keyword">end</span>
+                <span class="comment">%check if specular or diffusive collisions</span>
+            <span class="keyword">if</span> Specular == true
+                <span class="comment">%if specular, simply update positions</span>
+                x(j,1) = x(j,2) + Vx(j)*dt;
+                y(j,1) = y(j,2) + Vy(j)*dt;
+            <span class="keyword">else</span>
+                <span class="comment">%if diffusive, update velocities with random value</span>
+             Vx(j) = Vth * randn;
+             Vy(j) = Vth * randn;
+             <span class="comment">%assume random velocity will direct it inside the box</span>
+             <span class="keyword">while</span> leaking == true
+                 <span class="comment">%check if new velocity is directed towards the box by</span>
+                 <span class="comment">%examining position point and new velocity</span>
+                 <span class="keyword">if</span>(x(j,2) &lt; 80e-9 &amp;&amp; Vx(j) &gt;= 0) || <span class="keyword">...</span>
+                         (x(j,2) &gt; 120e-9 &amp;&amp; Vx(j) &lt;= 0) || <span class="keyword">...</span>
+                         (y(j,2) &lt; 60e-9 &amp;&amp; Vy(j) &gt;= 0)
+                     <span class="comment">%if new velocity conflicts with boxes, reinitialize</span>
+                     <span class="comment">%the velocity</span>
+                     Vx(j) = Vth * randn;
+                     Vy(j) = Vth * randn;
+                 <span class="keyword">else</span>
+                     leaking = false;
+                 <span class="keyword">end</span>
+             <span class="keyword">end</span>
+             <span class="comment">%update positions with random velocity</span>
+             x(j,1) = x(j,2) + Vx(j)*dt;
+             y(j,1) = y(j,2) + Vy(j)*dt;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+         <span class="comment">%checking if collision with bottom box</span>
+        <span class="keyword">if</span> (x(j,1) &gt;= 80e-9 &amp;&amp; x(j,1) &lt;= 120e-9) &amp;&amp; y(j,1) &lt;= 40e-9
+             <span class="comment">%checking which side of box collision came from</span>
+            <span class="comment">%if top side, reflect Y velocity and reset positions outside</span>
+            <span class="comment">%of box</span>
+                <span class="keyword">if</span> y(j,2) &gt; 40e-9
+                    Vy(j) = -Vy(j);
+                    y(j,1) = 40e-9;
+                    y(j,2) = 40e-9;
+                   <span class="comment">%if left side, reflect X velocity and reset positions outside</span>
+            <span class="comment">%of box</span>
+                <span class="keyword">elseif</span> x(j,2) &lt; 80e-9
+                    Vx(j) = -Vx(j);
+                    x(j,1) = 80e-9;
+                    x(j,2) = 80e-9;
+                     <span class="comment">%if right side, reflect X velocity and reset position</span>
+                    <span class="comment">%outside of box</span>
+                <span class="keyword">elseif</span> x(j,2) &gt; 120e-9
+                    Vx(j) = -Vx(j);
+                    x(j,1) = 120e-9;
+                    x(j,2) = 120e-9;
+                <span class="keyword">end</span>
+                 <span class="comment">%check if specular or diffusive collisions</span>
+            <span class="keyword">if</span> Specular == true
+                <span class="comment">%if specular, simply update positions</span>
+                x(j,1) = x(j,2) + Vx(j)*dt;
+                y(j,1) = y(j,2) + Vy(j)*dt;
+            <span class="keyword">else</span>
+                 <span class="comment">%if diffusive, update velocities with random value</span>
+             Vx(j) = Vth * randn;
+             Vy(j) = Vth * randn;
+              <span class="comment">%assume random velocity will direct it inside the box</span>
+             <span class="keyword">while</span> leaking == true
+                 <span class="comment">%check if new velocity is directed towards the box by</span>
+                 <span class="comment">%examining position point and new velocity</span>
+                 <span class="keyword">if</span>(x(j,2) &lt; 80e-9 &amp;&amp; Vx(j) &gt;= 0) || <span class="keyword">...</span>
+                         (x(j,2) &gt; 120e-9 &amp;&amp; Vx(j) &lt;= 0) || <span class="keyword">...</span>
+                         (y(j,2) &gt; 40e-9 &amp;&amp; Vy(j) &lt;= 0)
+                      <span class="comment">%if new velocity conflicts with boxes, reinitialize</span>
+                     <span class="comment">%the velocity</span>
+                     Vx(j) = Vth * randn;
+                     Vy(j) = Vth * randn;
+                 <span class="keyword">else</span>
+                     leaking = false;
+                 <span class="keyword">end</span>
+             <span class="keyword">end</span>
+              <span class="comment">%update positions with random velocity</span>
+             x(j,1) = x(j,2) + Vx(j)*dt;
+             y(j,1) = y(j,2) + Vy(j)*dt;
+            <span class="keyword">end</span>
+        <span class="keyword">end</span>
+          <span class="comment">%check right wall border</span>
+        <span class="keyword">if</span> x(j,1) &gt; L
+            x(j,2) = 0;
+            x(j,1) = dt * Vx(j);
+        <span class="keyword">end</span>
+        <span class="comment">%check left wall border</span>
+        <span class="keyword">if</span> x(j,1) &lt; 0
+            x(j,2) = L;
+            x(j,1) = x(j,2) + (dt * Vx(j));
+        <span class="keyword">end</span>
+         <span class="comment">%check roof/floor border</span>
+        <span class="keyword">if</span> y(j,1) &gt; W || y(j,1) &lt; 0
+            Vy(j) = -Vy(j);
+        <span class="keyword">end</span>
+         <span class="comment">%set line vectores for x and y positions</span>
+        XPlot = [x(j,2) x(j,1)];
+        YPlot = [y(j,2) y(j,1)];
+         <span class="comment">%plot visible x and y line vectors</span>
+        <span class="keyword">if</span> j &lt; VisibleEcount
+        plot(XPlot,YPlot);
+        <span class="keyword">end</span>
+
+        <span class="comment">%sum of themal velocities and temperatures</span>
+       VTotal = sqrt(Vx(j)^2 + Vy(j)^2);
+       <span class="comment">%Temperature(1,2) = Temperature(1,2) + (mn*Vtotal(j)^2)/(2*C.k);</span>
+
+    <span class="keyword">end</span>
+     <span class="comment">%plotting average temperature and ressetting values for next timestep</span>
+    AvgTemperature = Temperature(1,2)/Ecount;
+    TemperaturePlot = [Temperature(1,1) AvgTemperature];
+    TimePlot = [(Time - dt) Time];
+    subplot(2,1,2);
+    plot(TimePlot, TemperaturePlot);
+    Temperature(1,1) = AvgTemperature;
+    AvgTemperature = 0;
+    Temperature(1,2) = 0;
+    pause(1e-19)
+    Time = Time + dt;
+<span class="keyword">end</span>
+<span class="keyword">for</span> i = 1:(L/MappingStep)
+    <span class="comment">%looping through Y indexes of the Mapping grid</span>
+    <span class="keyword">for</span> j = 1:(W/MappingStep)
+        <span class="comment">%looping through electrons</span>
+        <span class="keyword">for</span> m = 1:Ecount
+            <span class="comment">%Checks to see if the electons position is with the map grip</span>
+            <span class="comment">%being indexed. does this by checking all 4 sides of the</span>
+            <span class="comment">%square grid index</span>
+            <span class="keyword">if</span>(x(m,1) &gt; MappingStep*(i -1)) &amp;&amp; <span class="keyword">...</span>
+                    (x(m,1) &lt; MappingStep*(i)) &amp;&amp; <span class="keyword">...</span>
+                    (y(m,1) &gt; MappingStep*(j - 1)) &amp;&amp; <span class="keyword">...</span>
+                    (y(m,1) &lt; MappingStep*(j))
+                <span class="comment">%sum of x and y velocities</span>
+                Vtotal(m) = sqrt(Vx(m)^2 + Vy(m)^2);
+                <span class="comment">%counts increased on the indexed location of both Maps</span>
+                DensityMap(j, i) = DensityMap(j, i) + 1;
+                TemperatureMap(j, i) = TemperatureMap(j,i) + <span class="keyword">...</span>
+                    (mn*Vtotal(m)^2)/(2*C.k);
+            <span class="keyword">end</span>
+            <span class="comment">%Averages the temperature values given in each grid index</span>
+            TemperatureMap(j,i) = TemperatureMap(j,i)/DensityMap(j,i);
+        <span class="keyword">end</span>
+    <span class="keyword">end</span>
+<span class="keyword">end</span>
+<span class="comment">%Since 3D plot from part 1 wasnt workin effectively, I kept the code form</span>
+<span class="comment">%assignment 1</span>
+figure(8)
+imagesc(DensityMap)
+title(<span class="string">'Density map of Electrons'</span>)
+xlabel(<span class="string">'X (5nm)'</span>);
+ylabel(<span class="string">'Y (5nm)'</span>);
+set(gca, <span class="string">'Ydir'</span>, <span class="string">'Normal'</span>)
+c = colorbar;
+title(c, <span class="string">'Electron Count'</span>)
+
+<span class="comment">%Although the density wasnt shown successfully, I predict the plot would</span>
+<span class="comment">%show the electrons slowly drifting to the side that has the higher</span>
+<span class="comment">%potential.</span>
+
+<span class="comment">%Part C</span>
+<span class="comment">%The next step into making this simulation more accurate is having the</span>
+<span class="comment">%more steps within the electric field grid. With limited steps withing the</span>
+<span class="comment">%grid, most postion values get approximated to the same point in the</span>
+<span class="comment">%electric field grid and if the grid steps got closer to the movement</span>
+<span class="comment">%steps, the accuracy would greatly increase.</span>
+</pre><img vspace="5" hspace="5" src="ELEC4700ass3_01.png" alt=""> <img vspace="5" hspace="5" src="ELEC4700ass3_02.png" alt=""> <img vspace="5" hspace="5" src="ELEC4700ass3_03.png" alt=""> <img vspace="5" hspace="5" src="ELEC4700ass3_04.png" alt=""> <img vspace="5" hspace="5" src="ELEC4700ass3_05.png" alt=""> <img vspace="5" hspace="5" src="ELEC4700ass3_06.png" alt=""> <img vspace="5" hspace="5" src="ELEC4700ass3_07.png" alt=""> <img vspace="5" hspace="5" src="ELEC4700ass3_08.png" alt=""> <p class="footer"><br><a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2018a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+%Assignment 3-part 1
+%Would like the one on one evaluation please
+%When publishing, the waveforms for parts 1 and 2 arent showing up and are
+%replaced with 5 irrelevent figures that you shouldnt consider part of it.
+%When the individual scripts are ran, the waveforms output as expected,
+%just when publishing or when running them all at once does this error
+%occur. Pretty sure it is due to the parts having different variable names
+%for some cases, so it doesnt compile correctly. 
+%Mike Crawford
+%reset
+clearvars
+clearvars -GLOBAL
+close all
+format shortE
+global C
+global Ecount
+global Vx Vy Vtotal x y
+Ecount =100;   %setting amount of electrons used
+C.mo = 9.10938215e-31;  %Electron mass
+C.k = 1.3806504e-23;    %Boltzmann constant
+q = -1.60217662e-19;
+T =300;     %Temperature (K)
+mn = 0.26*C.mo;
+Voltagex = 0.1; %initial voltage condition
+
+L = 200e-9; %Length of Border
+W = 100e-9; %Width of Border
+Edensity = 1e15*100^2;
+
+Vth = sqrt(2*(C.k*T)/mn); %Calculation of Thermal Velocity
+dt = 10e-15; %timestep
+Stop =500*dt; %timeframe
+x = zeros(Ecount, 2);   %array of x positions
+y = zeros(Ecount, 2);   %array of y positions
+
+Temperature = zeros(1,2);   %array of temperatures
+Time = 0;
+VisibleEcount = 10; %number of visible electrons
+Ex = Voltagex/L;    %E field in x and y direction
+Ey =  0;
+%Ex holds the value of the Electric field
+Fx = q*Ex;          %force in x and y direction
+Fy = q*Ey;
+
+Accx = Fx /mn;      %Acceleration in x and y direction
+Accy = Fy /mn;
+
+Pscatter = 1 - exp(dt/0.2e-12);
+Ix = zeros(1,Ecount); %initialize matrix for current values
+MappingStep = 10e-9; %size of each suare used on mapping grid
+%setting arrays of density and temperature based off border demesions and
+%mapping step
+DensityMap = zeros(W/MappingStep, L/MappingStep);
+TemperatureMap = zeros(W/MappingStep, L/MappingStep);
+for i = 1:Ecount %setting random locations for eact electron
+    x(i,1) = rand()*200e-9; 
+    y(i,1) = rand()*100e-9;
+end
+for i = 1:Ecount
+    dir = 2*pi*rand;
+Vx(1:Ecount) = Vth * cos(dir); %setting velocities
+Vy(1:Ecount) = Vth * sin(dir);
+end
+for i = 1:Ecount
+    Vtotal(i) = sqrt(Vx(i)^2 + Vy(i)^2); %summing x and y velocities
+end
+
+
+figure(1)   %plotting electrons
+subplot(2,1,1);
+axis([0 L 0 W]);
+title('Trajectory of electron in Silicon');
+xlabel('X');
+ylabel('Y');
+hold on;
+
+subplot(2,1,2); %plotting avg temperature
+axis([0 Stop 0 500]);
+title('Semiconductor Temperature');
+xlabel('Time (s)');
+ylabel('Temperature (K)');
+hold on;
+
+for i = 1:Ecount %Sum of all initial temperatures
+   Temperature(1,2) = Temperature(1,2) + (mn*Vtotal(i)^2)/(2*C.k);
+end
+Vdrift = mean(Vx); %Calculate aveage drift velocity
+Ix(1) = L * W * q * Edensity * Vdrift;
+%intitial average temperature
+AvgTemperature = Temperature(1,2)/Ecount;
+TemperaturePlot = [300 AvgTemperature]; %setting temperature line to plot
+TimePlot = [0 Time];    %setting time line to plot
+plot(Time, AvgTemperature);
+
+%reseting values before loop
+VTotal = 0;
+Temperature(1,2) = 0;
+AvgTemperature = 0;
+
+%looping through timesteps
+
+for i = 2:Ecount
+    subplot(2,1,1)
+    for j = 1:Ecount %looping through electrons
+        if Pscatter > rand
+            Vx(j) = Vt * randn;
+            Vy(j) = Vt * randn;
+        end
+        %updating velocity with new acceleration
+        Vx(j) =  Vx(j) + Accx*dt;
+        Vy(j) =  Vy(j) + Accy*dt;
+        x(j,2) = x(j,1); %updating previous positions
+        y(j,2) = y(j,1);
+        x(j,1) = x(j,1) + (dt * Vx(j));%updating new positions
+        y(j,1) = y(j,1) + (dt * Vy(j));
+        if x(j,1) > L %setting right side boundary condition
+            x(j,2) = 0;
+            x(j,1) = dt * Vx(j);
+        end
+        if x(j,1) < 0 %setting left side boundary condition
+            x(j,2) = L;
+            x(j,1) = x(j,2) + (dt * Vx(j));
+        end 
+        %setting roof/floor boundary condition
+        if y(j,1) > W || y(j,1) < 0 
+            Vy(j) = -Vy(j);
+        end
+        %setting up position line vectors to plot
+        XPlot = [x(j,2) x(j,1)];
+        YPlot = [y(j,2) y(j,1)];
+        if j < VisibleEcount
+            %plot visible position line vectors
+        plot(XPlot,YPlot);
+        end
+        
+        %sum of x and y  velocities
+       VTotal = sqrt(Vx(j)^2 + Vy(j)^2);
+       
+        %sum of all temperatures
+       Temperature(1,2) = Temperature(1,2) + (mn*Vtotal(j)^2)/(2*C.k);
+         
+    end
+    %averaging temperature sum and plotting against each timestep
+    Vdrift = mean(Vx(:));
+    Ix(i) = L * W * q * Edensity * Vdrift;
+    AvgTemperature = Temperature(1,2)/Ecount;
+    TemperaturePlot = [Temperature(1,1) AvgTemperature];
+    TimePlot = [(Time - dt) Time];
+    subplot(2,1,2);
+    plot(TimePlot, TemperaturePlot);
+    Temperature(1,1) = AvgTemperature;
+    AvgTemperature = 0;
+    Temperature(1,2) = 0;
+    pause(1e-19)
+    Time = Time + dt;
+   
+end
+%setup time axis for current plot
+TimePlot = (0:1:Ecount-1)*dt;
+figure(2)
+plot(TimePlot, Ix)
+xlabel('Time (s)')
+ylabel('current')
+title('Drift Current')
+hold on
+
+for i = 1:(L/MappingStep)
+    %looping through Y indexes of the Mapping grid
+    for j = 1:(W/MappingStep)
+        %looping through electrons
+        for m = 1:Ecount
+            %Checks to see if the electons position is with the map grip
+            %being indexed. does this by checking all 4 sides of the 
+            %square grid index
+            if(x(m,1) > MappingStep*(i -1)) && ...
+                    (x(m,1) < MappingStep*(i)) && ...
+                    (y(m,1) > MappingStep*(j - 1)) && ...
+                    (y(m,1) < MappingStep*(j))
+                %sum of x and y velocities
+                Vtotal(m) = sqrt(Vx(m)^2 + Vy(m)^2);
+                %counts increased on the indexed location of both Maps
+                DensityMap(j, i) = DensityMap(j, i) + 1;
+                TemperatureMap(j, i) = TemperatureMap(j,i) + ...
+                    (mn*Vtotal(m)^2)/(2*C.k);
+            end
+            %Averages the temperature values given in each grid index
+            TemperatureMap(j,i) = TemperatureMap(j,i)/DensityMap(j,i);
+        end
+    end
+end
+%uses histogram to model density with a 3rd demension of number of
+%electrons. Would have ideally reindexed the position matrixes to account
+%for all the different time locations, but didnt have time, would be the
+%next thing to change
+figure(3)
+hist3([x(:,1) y(:,1)], [200 100])
+title('3D Density map of Electrons')
+xlabel('X (5nm)');
+ylabel('Y (5nm)');
+set(gca, 'Ydir', 'Normal')
+c = colorbar;
+title(c, 'Electron Count')
+hold on
+
+%Couldnt figure out how to make temperature 3d. thought i could plot it as
+%the Z component but could not get the dimensions to match
+% [Tx,Ty] = meshgrid(1:10,1:20);
+% Tm = DensityMap(Tx, Ty)
+figure(4)
+% surf(Tx,Ty,Tm)
+imagesc(TemperatureMap)
+title('temperature map of Electrons');
+xlabel('X (5nm)')
+ylabel('Y (5nm)')
+set(gca, 'Ydir', 'Normal')
+c = colorbar;
+title(c, 'Temperature (K)')
+hold on
+
+%Assignment 3- part 2
+%this part was similar to the previous assignment with the main change
+%being the applied voltage being used
+x = 30;
+y = 20;
+
+conductOut = 1;
+conductBox = 01e-2;
+conduct = zeros(x,y);
+G = sparse (x*y, x*y);
+V = zeros(1, x*y);
+Voltagex = 0.1;
+
+for i = 1:x
+    for j = 1:y
+        %sets boundaries of boxes
+        if (i > (0.3*x) || i < (0.6*x)) && (j > (0.6*y) || j < (0.3*y))
+            conduct(i,j) = conductBox;
+        else
+            conduct(i,j) = conductOut;
+        end
+        
+    end
+end
+%same code as previous parts
+for i = 1:x
+    for j = 1:y
+        n = j + (i - 1)*y;
+        nx1 = j + ((i-1) - 1)*y;
+        nx2 = j + ((i+1) - 1)*y;
+        ny1 = (j-1) + (i - 1)*y;
+        ny2 = (j+1) + (i - 1)*y;
+       
+        if i == 1
+            V(n) = Voltagex;
+            G(n,n) = 1;
+        elseif i == x
+            V(n) = 0;
+            G(n,n) =1;
+        elseif j == 1 
+            Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+            Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+        
+            Cy2 = (conduct(i,j) + conduct(i,j+1))/2;
+            G(n,n) = -Cx1 - Cx2 - Cy2;
+            G(n, nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n, ny2) = Cy2;
+        elseif j == y
+             Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+             Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+             Cy1 = (conduct(i,j) + conduct(i,j-1))/2;
+            
+            G(n,n) = -Cx1 - Cx2 - Cy1;
+            G(n,nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n,ny1) = Cy1;
+        else
+             Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+            Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+            Cy1 = (conduct(i,j) + conduct(i,j-1))/2;
+            Cy2 = (conduct(i,j) + conduct(i,j+1))/2;
+            G(n,n) = -Cx1 - Cx2 - Cy1 - Cy2;
+            G(n,nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n,ny1) = Cy1;
+            G(n,ny2) = Cy2;
+        end
+    end
+end
+S = G\V';
+surface = zeros(x,y);
+for i = 1:x
+    for j = 1:y
+        n = j + (i - 1)*y;
+        surface(i,j) = S(n);
+    end
+end
+figure(5)
+surf(surface)
+title('Surface plot of V(x,y)')
+
+[Ex, Ey] = gradient(-surface);
+figure(6)
+quiver(Ex, Ey)
+title('Electric field quiver plot')
+
+%Assignment 3- part 3
+
+
+format shortE
+global C
+
+global Vx Vy Vtotal x y
+Ecount =1000;   %setting amount of electrons used
+C.mo = 9.10938215e-31; %Electron mass
+C.k = 1.3806504e-23; %Boltzmann constant
+q = -1.60217662e-19;
+T =300; %Temperature (K)
+mn = 0.26*C.mo;
+L = 200e-9;  %Length of Border
+W = 100e-9; %Width of Border
+Vth = sqrt((2*C.k*T)/mn); %Calculation of Thermal Velocity
+dt = 10e-15;  %timestep
+Stop = 100*dt; %timeframe
+x = zeros(Ecount, 2);  %array of x positions
+y = zeros(Ecount, 2);  %array of y positions
+Temperature = zeros(1,2); %array of temperatures
+Time = 0;
+VisibleEcount = 50; %visibble electrons
+tmn = 0.2e-12; %mean time between collisions
+PScat = 1 - exp(-dt/tmn);  %scattering probability equation
+VTotalHistogram = zeros(Ecount, 1); %array of thermal velocities
+DrawBoxX = [80e-9 80e-9 120e-9 120e-9 80e-9]; %X border limits of boxes
+%(Same X values for both)
+DrawBoxY1 = [100e-9 60e-9 60e-9 100e-9 100e-9];%Y border limits of top box
+DrawBoxY2 = [40e-9 0 0 40e-9 40e-9]; %Y border limits of bottom box
+Specular = true; %boolean indicating whether specular or diffusive
+InsideBox = true; %boolean showing if electron spawned inside boxes
+MappingStep = 10e-9; %size of each suare used on mapping grid
+%setting arrays of density and temperature based off border demesions and
+%mapping step
+DensityMap = zeros(W/MappingStep, L/MappingStep);
+TemperatureMap = zeros(W/MappingStep, L/MappingStep);
+
+nx = 30;
+ny = 20;
+dx = L/nx;
+dy = W/ny;
+conductOut = 1;
+conductBox = 01e-2;
+conduct = zeros(nx,ny);
+G = sparse (nx*ny, nx*ny);
+V = zeros(1, nx*ny);
+Voltagex = 0.1;
+
+for i = 1:nx
+    for j = 1:ny
+        %sets boundaries of boxes
+        if (i > (0.3*nx) || i < (0.6*nx)) && (j > (0.6*ny) || j < (0.3*ny))
+            conduct(i,j) = conductBox;
+        else
+            conduct(i,j) = conductOut;
+        end
+        
+    end
+end
+
+for i = 1:nx
+    for j = 1:ny
+        n = j + (i - 1)*ny;
+        nx1 = j + ((i-1) - 1)*ny;
+        nx2 = j + ((i+1) - 1)*ny;
+        ny1 = (j-1) + (i - 1)*ny;
+        ny2 = (j+1) + (i - 1)*ny;
+       
+        if i == 1
+            V(n) = Voltagex;
+            G(n,n) = 1;
+        elseif i == nx
+            V(n) = 0;
+            G(n,n) =1;
+        elseif j == 1 
+            Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+            Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+        
+            Cy2 = (conduct(i,j) + conduct(i,j+1))/2;
+            G(n,n) = -Cx1 - Cx2 - Cy2;
+            G(n, nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n, ny2) = Cy2;
+        elseif j == ny
+             Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+             Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+             Cy1 = (conduct(i,j) + conduct(i,j-1))/2;
+            
+            G(n,n) = -Cx1 - Cx2 - Cy1;
+            G(n,nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n,ny1) = Cy1;
+        else
+             Cx1 = (conduct(i,j) + conduct(i-1,j))/2;
+            Cx2 = (conduct(i,j) + conduct(i+1,j))/2;
+            Cy1 = (conduct(i,j) + conduct(i,j-1))/2;
+            Cy2 = (conduct(i,j) + conduct(i,j+1))/2;
+            G(n,n) = -Cx1 - Cx2 - Cy1 - Cy2;
+            G(n,nx1) = Cx1;
+            G(n,nx2) = Cx2;
+            G(n,ny1) = Cy1;
+            G(n,ny2) = Cy2;
+        end
+    end
+end
+
+S = G\V';
+surface = zeros(nx,ny);
+for i = 1:nx
+    for j = 1:ny
+        n = j + (i - 1)*ny;
+        surface(i,j) = S(n);
+    end
+end
+[Ex, Ey] = gradient(-surface);
+
+Fx = q*Ex;
+Fy = q*Ey;
+
+Accx = Fx /mn;
+Accy = Fy /mn;
+
+for i = 1:Ecount
+    x(i,1) = rand()*200e-9; %setting random electron positions
+    y(i,1) = rand()*100e-9;
+    InsideBox = true;
+    %checks if set electron is inside box, if so reinitialize its position
+    while InsideBox == true
+        if (x(i) >= 40e-9 && x(i) <= 120e-9) && (y(i) >= 60e-9 ||...
+                y(i) <= 40e-9)
+            x(i,1) = rand * 200e-9;
+            y(i,1) = rand * 100e-9;
+        else
+            InsideBox = false;
+        end
+    end
+    
+end
+
+for i = 1:Ecount
+    
+Vx(1:Ecount) = Vth * randn; %setting velocities
+Vy(1:Ecount) = Vth * randn;
+end
+
+%plot of electrons with boxes
+figure(7)
+subplot(2,1,1);
+plot(DrawBoxX, DrawBoxY1, DrawBoxX, DrawBoxY2)
+axis([0 L 0 W]);
+title('Part 3');
+xlabel('X');
+ylabel('Y');
+hold on;
+
+while Time < Stop
+    subplot(2,1,1)
+    %looping electrons
+    for j = 1:Ecount
+        %set to assume leaking to start condition for diffusive bounces
+        leaking = true;
+        %scattering probability condition
+        if PScat> rand
+                Vx(j) = Vth * randn;
+                Vy(j) = Vth * randn;
+        end
+        %
+        %Assigning values to reindex the electrons position on the grid, to
+        %the coresponding position on the electric field grid. This is used
+        %to estimate which index of the electric fireld the electron fits
+        %into, the round function is used to keep the value an integer and
+        %the conditions are put in place so it stays in the matrix range.
+        %Im not sure why values are exceeding the range, but this was the
+        %quick fix.
+        Axindex = round((x(j,2)/L) * 30);
+        Ayindex = round((y(j,2)/W)*20);
+        if Axindex < 1
+            Axindex = 1;
+        elseif Axindex > 30 
+                Axindex = 30;
+        end
+        if Ayindex < 1
+            Ayindex = 1;
+        elseif Ayindex > 20
+            Ayindex = 20;
+        end
+        %update velocities and positions
+        Vx(j) =  Vx(j) + Accx(Axindex,Ayindex)*dt;
+        Vy(j) =  Vy(j) + Accy(Axindex,Ayindex)*dt;
+        x(j,2) = x(j,1);
+        y(j,2) = y(j,1);
+        x(j,1) = x(j,1) + (dt * Vx(j));
+        y(j,1) = y(j,1) + (dt * Vy(j));
+        %checking if collision with top box
+        if (x(j,1) >= 80e-9 && x(j,1) <= 120e-9) && y(j,1) >= 60e-9
+            %checking which side of box collision came from
+            %if left side, reflect X velocity and reset positions outside 
+            %of box
+                if y(j,2) < 60e-9
+                    Vy(j) = -Vy(j);
+                    y(j,1) = 60e-9;
+                    y(j,2) = 60e-9;
+                    %if right side, reflect X velocity and reset position
+                    %outside of box
+                elseif x(j,2) < 80e-9
+                    Vx(j) = -Vx(j);
+                    x(j,1) = 80e-9;
+                    x(j,2) = 80e-9;
+                    %if bottom side, reflect Y velocity and reset position
+                    %outside of box
+                elseif x(j,2) > 120e-9
+                    Vx(j) = -Vx(j);
+                    x(j,1) = 120e-9;
+                    x(j,2) = 120e-9;
+                end
+                %check if specular or diffusive collisions
+            if Specular == true
+                %if specular, simply update positions
+                x(j,1) = x(j,2) + Vx(j)*dt;
+                y(j,1) = y(j,2) + Vy(j)*dt;
+            else
+                %if diffusive, update velocities with random value
+             Vx(j) = Vth * randn;
+             Vy(j) = Vth * randn;
+             %assume random velocity will direct it inside the box
+             while leaking == true
+                 %check if new velocity is directed towards the box by 
+                 %examining position point and new velocity
+                 if(x(j,2) < 80e-9 && Vx(j) >= 0) || ...
+                         (x(j,2) > 120e-9 && Vx(j) <= 0) || ...
+                         (y(j,2) < 60e-9 && Vy(j) >= 0)
+                     %if new velocity conflicts with boxes, reinitialize 
+                     %the velocity
+                     Vx(j) = Vth * randn;
+                     Vy(j) = Vth * randn;
+                 else
+                     leaking = false;
+                 end
+             end
+             %update positions with random velocity
+             x(j,1) = x(j,2) + Vx(j)*dt;
+             y(j,1) = y(j,2) + Vy(j)*dt;
+            end
+        end
+         %checking if collision with bottom box
+        if (x(j,1) >= 80e-9 && x(j,1) <= 120e-9) && y(j,1) <= 40e-9
+             %checking which side of box collision came from
+            %if top side, reflect Y velocity and reset positions outside 
+            %of box
+                if y(j,2) > 40e-9
+                    Vy(j) = -Vy(j);
+                    y(j,1) = 40e-9;
+                    y(j,2) = 40e-9;
+                   %if left side, reflect X velocity and reset positions outside 
+            %of box  
+                elseif x(j,2) < 80e-9
+                    Vx(j) = -Vx(j);
+                    x(j,1) = 80e-9;
+                    x(j,2) = 80e-9;
+                     %if right side, reflect X velocity and reset position
+                    %outside of box
+                elseif x(j,2) > 120e-9
+                    Vx(j) = -Vx(j);
+                    x(j,1) = 120e-9;
+                    x(j,2) = 120e-9;
+                end
+                 %check if specular or diffusive collisions
+            if Specular == true
+                %if specular, simply update positions
+                x(j,1) = x(j,2) + Vx(j)*dt;
+                y(j,1) = y(j,2) + Vy(j)*dt;
+            else
+                 %if diffusive, update velocities with random value
+             Vx(j) = Vth * randn;
+             Vy(j) = Vth * randn;
+              %assume random velocity will direct it inside the box
+             while leaking == true
+                 %check if new velocity is directed towards the box by 
+                 %examining position point and new velocity
+                 if(x(j,2) < 80e-9 && Vx(j) >= 0) || ...
+                         (x(j,2) > 120e-9 && Vx(j) <= 0) || ...
+                         (y(j,2) > 40e-9 && Vy(j) <= 0)
+                      %if new velocity conflicts with boxes, reinitialize 
+                     %the velocity
+                     Vx(j) = Vth * randn;
+                     Vy(j) = Vth * randn;
+                 else
+                     leaking = false;
+                 end
+             end
+              %update positions with random velocity
+             x(j,1) = x(j,2) + Vx(j)*dt;
+             y(j,1) = y(j,2) + Vy(j)*dt;
+            end
+        end
+          %check right wall border
+        if x(j,1) > L
+            x(j,2) = 0;
+            x(j,1) = dt * Vx(j);
+        end
+        %check left wall border
+        if x(j,1) < 0
+            x(j,2) = L;
+            x(j,1) = x(j,2) + (dt * Vx(j));
+        end
+         %check roof/floor border
+        if y(j,1) > W || y(j,1) < 0
+            Vy(j) = -Vy(j);
+        end
+         %set line vectores for x and y positions
+        XPlot = [x(j,2) x(j,1)];
+        YPlot = [y(j,2) y(j,1)];
+         %plot visible x and y line vectors
+        if j < VisibleEcount
+        plot(XPlot,YPlot);
+        end
+        
+        %sum of themal velocities and temperatures
+       VTotal = sqrt(Vx(j)^2 + Vy(j)^2);
+       %Temperature(1,2) = Temperature(1,2) + (mn*Vtotal(j)^2)/(2*C.k);
+         
+    end
+     %plotting average temperature and ressetting values for next timestep
+    AvgTemperature = Temperature(1,2)/Ecount;
+    TemperaturePlot = [Temperature(1,1) AvgTemperature];
+    TimePlot = [(Time - dt) Time];
+    subplot(2,1,2);
+    plot(TimePlot, TemperaturePlot);
+    Temperature(1,1) = AvgTemperature;
+    AvgTemperature = 0;
+    Temperature(1,2) = 0;
+    pause(1e-19)
+    Time = Time + dt;
+end 
+for i = 1:(L/MappingStep)
+    %looping through Y indexes of the Mapping grid
+    for j = 1:(W/MappingStep)
+        %looping through electrons
+        for m = 1:Ecount
+            %Checks to see if the electons position is with the map grip
+            %being indexed. does this by checking all 4 sides of the 
+            %square grid index
+            if(x(m,1) > MappingStep*(i -1)) && ...
+                    (x(m,1) < MappingStep*(i)) && ...
+                    (y(m,1) > MappingStep*(j - 1)) && ...
+                    (y(m,1) < MappingStep*(j))
+                %sum of x and y velocities
+                Vtotal(m) = sqrt(Vx(m)^2 + Vy(m)^2);
+                %counts increased on the indexed location of both Maps
+                DensityMap(j, i) = DensityMap(j, i) + 1;
+                TemperatureMap(j, i) = TemperatureMap(j,i) + ...
+                    (mn*Vtotal(m)^2)/(2*C.k);
+            end
+            %Averages the temperature values given in each grid index
+            TemperatureMap(j,i) = TemperatureMap(j,i)/DensityMap(j,i);
+        end
+    end
+end
+%Since 3D plot from part 1 wasnt workin effectively, I kept the code form
+%assignment 1
+figure(8)
+imagesc(DensityMap)
+title('Density map of Electrons')
+xlabel('X (5nm)');
+ylabel('Y (5nm)');
+set(gca, 'Ydir', 'Normal')
+c = colorbar;
+title(c, 'Electron Count')
+
+%Although the density wasnt shown successfully, I predict the plot would
+%show the electrons slowly drifting to the side that has the higher
+%potential.
+
+%Part C
+%The next step into making this simulation more accurate is having the
+%more steps within the electric field grid. With limited steps withing the
+%grid, most postion values get approximated to the same point in the
+%electric field grid and if the grid steps got closer to the movement
+%steps, the accuracy would greatly increase.
+##### SOURCE END #####
+--></body></html>
